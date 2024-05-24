@@ -39,9 +39,7 @@ module.exports = function (app) {
         return res.json(books);
       } catch (err) {
         console.log(err);
-        return res.status(500).json({
-          error: 'no book exist'
-        });
+        return res.status(500).json('cannot find books');
       }
       //response will be array of book objects
       //json res format: [{"_id": bookid, "title": book_title, "commentcount": num_of_comments },...]
@@ -50,43 +48,34 @@ module.exports = function (app) {
     .post(async function (req, res) {
       try {
         const { title } = req.body;
-
-        if (!title) return res.json('missing required field title');
-
-        let book = new Book({
-          title: title
-        });
+    
+        if (!title) return res.send('missing required field title');
+    
+        let book = new Book({ title });
         const bookSaved = await book.save();
-
+    
         return res.json({
           _id: bookSaved._id.toString(),
           title: bookSaved.title
         });
       } catch (err) {
         console.log(err);
-        return res.status(500).json({
-          error: `error adding book`
-        })
+        return res.status(500).send('error adding book');
       }
-      //response will contain new book object including atleast _id and title
     })
-
+    
     .delete(async function (req, res) {
       try {
         let deleteBooks = await Book.deleteMany({});
 
         if (deleteBooks.deletedCount > 0) {
-          return res.json('complete delete successful');
+          return res.send('complete delete successful');
         } else {
-          return res.status(404).json({
-            error: 'no books found to delete'
-          });
+          return res.status(404).send('no books found to delete');
         }
       } catch (err) {
         console.log(err);
-        return res.status(500).json({
-          error: 'error deleting books'
-        });
+        return res.status(500).send('error deleting books');
       }
     });
 
@@ -98,14 +87,14 @@ module.exports = function (app) {
         let book = await Book.findById(bookid);
         
         if (!book) {
-          return res.status(404).json('no book exists');
+          return res.send('no book exists');
         } else {
           const { _id, title, comments } = book;  
-          return res.json({ _id: _id, title: title, comments: comments });
+          return res.json({ _id: _id, title: title, comments: comments, commentcount: comments.length });
         }
       } catch (err) {
         console.log(err);
-        return res.status(500).json({ error: 'error fetching book' });
+        return res.status(500).send('error fetching book');
       }
     })
 
@@ -115,9 +104,9 @@ module.exports = function (app) {
         let comment = req.body.comment;
         let book = await Book.findById(bookid);
         
-        if (!comment) return res.status(404).json('missing required field comment');
+        if (!comment) return res.send('missing required field comment');
         if (!book) {
-          return res.status(404).json('no book exists');
+          return res.send('no book exists');
         } else {
           const { _id, title, comments } = book;
 
@@ -128,7 +117,7 @@ module.exports = function (app) {
         }
       } catch (err) {
         console.log(err);
-        return res.status(500).json({ error: 'error adding comment' });
+        return res.status(500).send('error adding comment');
       }
     })
 
@@ -138,13 +127,13 @@ module.exports = function (app) {
         let deleteResult = await Book.findByIdAndDelete(bookid);
 
         if (!deleteResult) {
-          return res.status(404).json('no book exists');
+          return res.send('no book exists');
         } else {
-          return res.json('delete successful');
+          return res.send('delete successful');
         }
       } catch (err) {
         console.log(err);
-        return res.status(500).json({ error: 'error deleting book' });
+        return res.status(500).send('error deleting book');
       }
     });
 };

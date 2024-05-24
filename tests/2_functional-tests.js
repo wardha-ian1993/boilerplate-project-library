@@ -62,7 +62,7 @@ suite('Functional Tests', function() {
           .post('/api/books')
           .send({ title: '' })
           .end(function(err, res) {
-            assert.equal(res.body, 'missing required field title');
+            assert.equal(res.text, 'missing required field title');
             done();
           });
       });
@@ -86,8 +86,8 @@ suite('Functional Tests', function() {
 
     });
 
-    const validId = '66508b0ee66adda006c67f98';
-    const testId = '66508bf2e66adda006c67fa8';
+    const validId = '6650995c1a14e1c6f470f0bd';
+    const testId = '66509996dcec2f7fed94e4ed';
 
     const deletedId = '665088fbdf4b60f8a1456f2f';
     
@@ -99,7 +99,7 @@ suite('Functional Tests', function() {
           .keepOpen()
           .get(`/api/books/${deletedId}`)
           .end(function(err, res) {
-            assert.equal(res.body, 'no book exists');
+            assert.equal(res.text, 'no book exists');
             done();
           });
       });
@@ -145,7 +145,7 @@ suite('Functional Tests', function() {
           .post(`/api/books/${testId}`)
           .send({ comment: '' })
           .end(function(err, res) {
-            assert.equal(res.body, 'missing required field comment');
+            assert.equal(res.text, 'missing required field comment');
             done();
           });
       });
@@ -157,7 +157,7 @@ suite('Functional Tests', function() {
           .post(`/api/books/${deletedId}`)
           .send({ comment: 'Test comments' })
           .end(function(err, res) {
-            assert.equal(res.body, 'no book exists');
+            assert.equal(res.text, 'no book exists');
             done();
           });
       });
@@ -172,7 +172,7 @@ suite('Functional Tests', function() {
           .keepOpen()
           .delete(`/api/books/${testId}`)
           .end(function(err, res) {
-            assert.equal(res.body, 'delete successful');
+            assert.equal(res.text, 'delete successful');
             done();
           });
       });
@@ -183,8 +183,7 @@ suite('Functional Tests', function() {
           .keepOpen()
           .delete(`/api/books/${deletedId}`)
           .end(function(err, res) {
-            assert.equal(res.status, 404);
-            assert.equal(res.body, 'no book exists');
+            assert.equal(res.text, 'no book exists');
             done();
           });
       });
