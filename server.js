@@ -5,6 +5,24 @@ const bodyParser  = require('body-parser');
 const cors        = require('cors');
 require('dotenv').config();
 
+let mongoose;
+try {
+  mongoose = require("mongoose");
+} catch (e) {
+  console.log(e);
+};
+
+mongoose.connect(process.env.MONGO_URI);
+
+const connectTest = mongoose.connection;
+
+connectTest.on('error', async error => {
+  console.error('Connection Error:', error);
+});
+connectTest.once('open', () => {
+  console.log('MongoDB connection successful');
+});
+
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
