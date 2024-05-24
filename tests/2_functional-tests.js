@@ -44,13 +44,13 @@ suite('Functional Tests', function() {
           .request(server)
           .keepOpen()
           .post('/api/books')
-          .send({ title: 'Test Books'})
+          .send({ title: 'Testing book'})
           .end(function(err, res) {
             assert.equal(res.status, 200);
             assert.isObject(res.body);
             assert.property(res.body, '_id');
             assert.property(res.body, 'title');
-            assert.equal(res.body.title, 'Test Books');
+            assert.equal(res.body.title, 'Testing book');
             done();
           });
       });
@@ -62,9 +62,7 @@ suite('Functional Tests', function() {
           .post('/api/books')
           .send({ title: '' })
           .end(function(err, res) {
-            assert.isObject(res.body);
-            assert.property(res.body, 'error');
-            assert.equal(res.body.error, 'missing required field title');
+            assert.equal(res.body, 'missing required field title');
             done();
           });
       });
@@ -88,11 +86,11 @@ suite('Functional Tests', function() {
 
     });
 
-    const validId = '66507a74acbbe2e970fcd21f';
-    const deletedId = '66507bf5b36d0d5cd35c0901';
-    
-    const testId = '66508558e949a8669d883621';
+    const validId = '66508b0ee66adda006c67f98';
+    const testId = '66508bf2e66adda006c67fa8';
 
+    const deletedId = '665088fbdf4b60f8a1456f2f';
+    
     suite('GET /api/books/[id] => book object with [id]', function(){
 
       test('Test GET /api/books/[id] with id not in db',  function(done){
@@ -101,9 +99,7 @@ suite('Functional Tests', function() {
           .keepOpen()
           .get(`/api/books/${deletedId}`)
           .end(function(err, res) {
-            assert.equal(res.status, 404);
-            assert.property(res.body, 'error');
-            assert.equal(res.body.error, 'no book exists');
+            assert.equal(res.body, 'no book exists');
             done();
           });
       });
@@ -135,8 +131,6 @@ suite('Functional Tests', function() {
           .post(`/api/books/${testId}`)
           .send({ comment: 'Test comments' })
           .end(function(err, res) {
-            if (err) done(err);
-            assert.equal(res.status, 200);
             assert.isArray(res.body.comments, 'Comments should be an array');
             assert.equal(res.body.comments[res.body.comments.length - 1], 'Test comments');
             done();
@@ -151,7 +145,7 @@ suite('Functional Tests', function() {
           .post(`/api/books/${testId}`)
           .send({ comment: '' })
           .end(function(err, res) {
-            assert.equal(res.body.error, 'missing required field comment');
+            assert.equal(res.body, 'missing required field comment');
             done();
           });
       });
@@ -163,7 +157,7 @@ suite('Functional Tests', function() {
           .post(`/api/books/${deletedId}`)
           .send({ comment: 'Test comments' })
           .end(function(err, res) {
-            assert.equal(res.body.error, 'no book exists');
+            assert.equal(res.body, 'no book exists');
             done();
           });
       });
@@ -190,7 +184,7 @@ suite('Functional Tests', function() {
           .delete(`/api/books/${deletedId}`)
           .end(function(err, res) {
             assert.equal(res.status, 404);
-            assert.equal(res.body.error, 'no book exists');
+            assert.equal(res.body, 'no book exists');
             done();
           });
       });

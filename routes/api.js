@@ -51,7 +51,7 @@ module.exports = function (app) {
       try {
         const { title } = req.body;
 
-        if (!title) return res.json({ error: 'missing required field title' });
+        if (!title) return res.json('missing required field title');
 
         let book = new Book({
           title: title
@@ -98,7 +98,7 @@ module.exports = function (app) {
         let book = await Book.findById(bookid);
         
         if (!book) {
-          return res.status(404).json({ error: 'no book exists' });
+          return res.status(404).json('no book exists');
         } else {
           const { _id, title, comments } = book;  
           return res.json({ _id: _id, title: title, comments: comments });
@@ -115,9 +115,9 @@ module.exports = function (app) {
         let comment = req.body.comment;
         let book = await Book.findById(bookid);
         
-        if (!comment) return res.status(404).json({ error: 'missing required field comment' });
+        if (!comment) return res.status(404).json('missing required field comment');
         if (!book) {
-          return res.status(404).json({ error: 'no book exists' });
+          return res.status(404).json('no book exists');
         } else {
           const { _id, title, comments } = book;
 
@@ -138,7 +138,7 @@ module.exports = function (app) {
         let deleteResult = await Book.findByIdAndDelete(bookid);
 
         if (!deleteResult) {
-          return res.status(404).json({ error: 'no book exists' });
+          return res.status(404).json('no book exists');
         } else {
           return res.json('delete successful');
         }
